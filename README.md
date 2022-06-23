@@ -38,12 +38,11 @@ De Ilojo bar is in 2016 gesloopt, onterecht. Het was een monumentaal pand. Dus n
 Laten zien wat je nog kan doen met erfgoed dat er niet meer is.
 
 #### Oplevering
-Iedereen maakt zijn eigen project en zal dit opleveren.
+Het project wordt in duo's gemaakt. Uiteindelijk wordt alle code als .zip opgeleverd. 
 
 #### Randvoorwaarden
 -	Voor mobiel moet het goed werken
 -	Verhalen vertellen
--	Verhalen insturen en modereren
 
 #### Gebruikers van het eindresultaat
 1.	Mensen die in Lagos wonen.
@@ -63,12 +62,15 @@ Als inwoner van Lagos, Nigeriaan, lid van de Nigeriaanse diaspora of geïnteress
 
 
 ## Oplossing
-Om het huidige probleem op te lossen hebben wij gekozen om ieder verhaal een eigen karakter mee te geven. De rode draad van ons project is wel het journalistieke werk wat gedaan is door Femke van Zeijl. Doormiddel van een storytelling approach en een visuele aanpak brengen wij deze verhalen tot leven. Zo heeft de gebruiker het idee dat hij of zij daadwerkelijk in dat verhaal zit.
+Om het huidige probleem op te lossen hebben wij gekozen om ieder verhaal een eigen karakter mee te geven. Hierbij hebben we het journalistieke werk van Femke van Zeijl als rode draad gebruikt. Doormiddel van een storytelling approach en een visuele aanpak brengen wij deze verhalen tot leven. Zo heeft de gebruiker het idee dat hij of zij daadwerkelijk in dat verhaal zit.
 
 Onze digitale oplossing: https://ilojo-bar.vercel.app/ (alleen op mobiel beschikbaar)
 
 ## Uitleg van de code
---
+- Mappen structuur
+
+
+- Uitleg Context provider
 
 ## Volgende stappen
 -- (het hele verhaal op eigen pagina) (responsive) (3d model in de footer geanimeerd) 
