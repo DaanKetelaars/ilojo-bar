@@ -356,7 +356,12 @@ Het is even wat werk en was ook aardig zoeken naar de juiste opzet. Toch als je 
 
 
 ## Volgende stappen
--- (het hele verhaal op eigen pagina) (responsive) (3d model in de footer geanimeerd) 
+Daan en ik zijn erg blij met het uiteindelijke product dat wij hebben kunnen aanleveren. Maar het project is nog niet af. Er zijn nog een hoop dingen die moeten gebeuren. 
+
+- De website moet nog responsive worden gemaakt. 
+- Er moet voor ieder verhaal een eigen pagina worden gemaakt, waarop het hele verhaal wordt uitgelicht.
+- Er moet bij het verhaal, 'a family house for the olaiyas' een .mp3-bestand met juju muziek worden toegevoegd. 
+- In de footer moet een 3d animatie worden gemaakt waarbij de bar ronddraait. 
 
 
 ## Licentie
