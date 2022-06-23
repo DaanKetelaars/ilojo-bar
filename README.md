@@ -68,6 +68,26 @@ Om het huidige probleem op te lossen hebben wij gekozen om ieder verhaal een eig
 Onze digitale oplossing: https://ilojo-bar.vercel.app/ (alleen op mobiel beschikbaar)
 
 ## Uitleg van de code
+### Next.js
+Voor dit project hebben we Next.js gebruikt. Next.js is een framework bovenop React wat ervoor zorgt dat we serverside code kunnen schrijven. Dit kan niet in React. Naast, het kunnen schrijven van serverside code, heeft Next.js nog een aantal belangrijke voordelen. 
+
+Next heeft een aantal fijne optimalisatie's:
+1. Het <Image /> component zorgt voor geoptimaliseerde responsive afbeeldingen
+2. Font optimalisaties
+3. Stel loading priority van <Scripts /> in. 
+4. Caching headers
+5. Minified files
+6. Pre-rendering pages (met getStaticProps()).
+
+Deze optimalisatie's zijn voor ons de reden geweest om Next.js te gebruiken. De apparaten en verbindingen in Nigeria zijn minder krachtig en stabiel als hier. En dus wilde wij er zeker van zijn dat het met de performance van onze website goed zit. 
+<img src="https://github.com/DaanKetelaars/ilojo-bar/blob/main/assets/data-model.png" alt="data model" width="350px" /> 
+
+### Data model
+<img src="https://github.com/DaanKetelaars/ilojo-bar/blob/main/assets/data-model.png" alt="data model" width="350px" /> 
+In het data model is te zien hoe de data, in dit geval de content voor website, zich door de website verspreid. 
+
+We versturen de data uit het CMS (Content Management Systeem) via GraphQL. Deze halen we binnen in API.js (zie code hieronder). In API.js pakken we de data uit en versturen we het naar Index.js. In Index.js laden we uiteindelijk data in als de pagina door de browser wordt aangevraagd. Middels een Context provider verdelen we uiteindelijk de data over de Components. 
+
 ### Context Provider
 Omdat wij Next gebruiken werken wij server-side. Het ophalen van onze data vanuit ons CMS doen wij ook server-side. Toch was het voor ons wat lastig om dit door te brengen naar client-side components. Uiteindelijk kwamen wij uit op Context Provider. Context geeft je de optie om data te kunnen versturen naar je component level. Dit was nodig om zo onze content uit het CMS te kunnen tonen in de website. 
 
