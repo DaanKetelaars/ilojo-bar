@@ -38,11 +38,12 @@ De Ilojo bar is in 2016 gesloopt, onterecht. Het was een monumentaal pand. Dus n
 Laten zien wat je nog kan doen met erfgoed dat er niet meer is.
 
 #### Oplevering
-Het project wordt in duo's gemaakt. Uiteindelijk wordt alle code als .zip opgeleverd. 
+Iedereen maakt zijn eigen project en zal dit opleveren.
 
 #### Randvoorwaarden
 -	Voor mobiel moet het goed werken
 -	Verhalen vertellen
+-	Verhalen insturen en modereren
 
 #### Gebruikers van het eindresultaat
 1.	Mensen die in Lagos wonen.
@@ -62,15 +63,275 @@ Als inwoner van Lagos, Nigeriaan, lid van de Nigeriaanse diaspora of geïnteress
 
 
 ## Oplossing
-Om het huidige probleem op te lossen hebben wij gekozen om ieder verhaal een eigen karakter mee te geven. Hierbij hebben we het journalistieke werk van Femke van Zeijl als rode draad gebruikt. Doormiddel van een storytelling approach en een visuele aanpak brengen wij deze verhalen tot leven. Zo heeft de gebruiker het idee dat hij of zij daadwerkelijk in dat verhaal zit.
+Om het huidige probleem op te lossen hebben wij gekozen om ieder verhaal een eigen karakter mee te geven. De rode draad van ons project is wel het journalistieke werk wat gedaan is door Femke van Zeijl. Doormiddel van een storytelling approach en een visuele aanpak brengen wij deze verhalen tot leven. Zo heeft de gebruiker het idee dat hij of zij daadwerkelijk in dat verhaal zit.
 
 Onze digitale oplossing: https://ilojo-bar.vercel.app/ (alleen op mobiel beschikbaar)
 
 ## Uitleg van de code
-- Mappen structuur
+### Context Provider
+Omdat wij Next gebruiken werken wij server-side. Het ophalen van onze data vanuit ons CMS doen wij ook server-side. Toch was het voor ons wat lastig om dit door te brengen naar client-side components. Uiteindelijk kwamen wij uit op Context Provider. Context geeft je de optie om data te kunnen versturen naar je component level. Dit was nodig om zo onze content uit het CMS te kunnen tonen in de website. 
+
+Ik zal even laten zien hoe wij nu data ophalen.
+
+```
+../lib/api.js
+
+import {
+  GraphQLClient,
+  gql
+} from 'graphql-request';
+const graphcms = new GraphQLClient(process.env.GRAPHCMS_ENDPOINT);
+let mains;
+let blocks;
+let header;
+let footer;
+
+export async function getAllStories(section) {
+  const query = gql `
+    {
+      mains {
+        blocks {
+          ... on Story {
+            id
+            bodytext01 {
+              text
+            }
+            bodytext02 {
+              text
+            }
+            images {
+              id
+              url
+            }
+            title
+            subtitle
+          }
+        }
+      }
+      headersConnection {
+        edges {
+          node {
+            heading
+            id
+            image {
+              url
+              id
+            }
+          }
+        }
+      }
+      footersConnection {
+        edges {
+          node {
+            title
+            image {
+              url
+              id
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const results = await graphcms.request(query);
+  mains = results.mains;
+  mains.forEach((item) => {
+    blocks = item.blocks;
+  });
+  results.headersConnection.edges.forEach((result) => {
+    header = result.node;
+  });
+  results.footersConnection.edges.forEach((result) => {
+    footer = result.node;
+  });
+
+  const sections = {
+    blocks,
+    header,
+    footer,
+  };
+  return sections;
+}
+
+```
+
+Omdat wij gebruik maken van GraphCMS, wat gemaakt is door GraphQL, kunnen wij gemakkelijk op die manier data inladen. Zo kiezen wij wat er nodig is. Uiteindelijk doen wij nog een forEach om in de juiste array of object te komen. Dit word gereturnd, zodat wij dit via onze context provider kunnen gebruiken in pages en components. Dus api.js moet je zien als ons fetchData bestand.
+
+Hierna maak je een context bestand aan, op google komen er verschillende versies voorbij. De één heel ingewikkeld en de ander heel simpel. Uiteindelijk hebben wij vrij weinig code nodig gehad om tot het gewenste resultaat te komen.
+
+```
+../context/state.js
+
+import { createContext } from "react";
+export const Context = createContext();
+
+```
+
+De volgende stap is de variabel "Context" toevoegen aan je index.js. Doe je dit niet wordt het vrij lastig om je data door te sturen.
+Dit ziet er als volgt uit.
+
+```
+import Main from '../components/main/Main';
+import Header from '../components/header/Header';
+import Footer from '../components/footer/Footer';
+import { Context } from '../context/state';
+import React, { useState } from 'react';
+import { getAllStories } from '../lib/api';
+import Script from 'next/script';
+import Head from 'next/head';
+
+export default function Home({ stories }) {
+  const [context, setContext] = useState(stories);
+
+  return (
+    <Context.Provider value={[context, setContext]}>
+      <Head>
+        <title>The stories of Ilojo bar.</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <link rel="icon" href="/images/home/favicon.svg" type="image/svg+xml"></link>
+      </Head> 
+      <div>
+        <div className='grain'></div>
+        <Header />
+        <Main />
+        <Footer />
+        <Script strategy='lazyOnload' src='/js/generateHeading.js' />
+        <Script strategy='lazyOnload' src='/js/scrollJacking.js' />
+        <Script strategy='lazyOnload' src='/js/InView.js' />
+      </div>
+    </Context.Provider>
+  );
+}
+
+export async function getStaticProps() {
+  const stories = (await getAllStories()) || [];
+
+  return {
+    props: { stories },
+  };
+}
+
+```
+De belangrijkste stukjes hierin voor het versturen van de data zijn deze.
 
 
-- Uitleg Context provider
+```
+import { Context } from '../context/state';
+import React, { useState } from 'react';
+import { getAllStories } from '../lib/api';
+
+```
+Hier importeren wij ons api.js en de functie. In de functie getAllStories zit onze data vanuit het CMS. Ook importeren wij de context provider. En als laatst de useState. Met useState gaan wij onze context provider koppelen aan ons index.js bestand.
+
+```
+export default function Home({ stories }) {
+  const [context, setContext] = useState(stories);
+  
+```
+Aan Home voegen wij een prop toe. Deze prop komt weer vanuit de getAllStories en getStaticProps, die onderin staat.
+Daaronder staat de useState. useState is een Hook waarmee je state variables in functional components kunt hebben. Daar voegen wij nogmaals de prop stories toe.
+
+```
+<Context.Provider value={[context, setContext]}></Context.Provider>
+
+```
+
+In de context provider die om alle andere code staat in ons index.js wordt er een value meegegeven. Dit is dan weer de useState. Zoals je ziet geef je stap voor stap de data door. Het is even zoeken, maar als je het doorhebt is het wel te doen. 
+
+```
+export async function getStaticProps() {
+  const stories = (await getAllStories()) || [];
+
+  return {
+    props: { stories },
+  };
+}
+```
+Als laatst voegen wij een getStaticProps functie toe. Dit is een functie vanuit Next.JS om data binnen te halen. Voor ons was dit de meest ideale optie met ons CMS. Er zijn ook nog andere functies in Next.JS, maar die waren niet in ons voordeel. getStaticProps werkt eigenlijk ook wel het best. In deze functie doen wij een async await van getAllStories en maken we de prop aan die bovenin weer toegevoegd wordt.
+
+
+Dan hebben we nog de allerlaatste stap. Het gebruiken van je data. Ik pak even onze main waar wij ons story component maken. Hier zitten weer wat functies en code die hierboven ook al gebruikt is. Het enige verschil is dat je nu eindelijk kan filteren binnen in de data.
+
+```
+// Styles
+import styles from '../../styles/main/Main.module.scss';
+import Image from 'next/image';
+
+import React, { useContext } from 'react';
+import { Context } from '../../context/state';
+
+export default function Main() {
+  const [context] = useContext(Context);
+  const stories = context.blocks;
+  return (
+    <main className={styles.main}>
+      {stories.map((ctx, i) => (
+        <article key={i}>
+          {ctx.subtitle !== null ? <h4>{ctx.subtitle}</h4> : ''}
+          <h2>{ctx.title}</h2>
+          {ctx.bodytext01.text !== '' ? <p>{ctx.bodytext01.text}</p> : ''}
+          {ctx.bodytext02.text !== '' ? <p>{ctx.bodytext02.text}</p> : ''}
+          {ctx.images.map((image) => {
+            return (
+              <div key={image.id} className='article-img'>
+                <Image
+                  src={image.url}
+                  alt='foto'
+                  layout='responsive'
+                  width='100%'
+                  height='100%'
+                  objectFit='contain'
+                />
+              </div>
+            );
+          })}
+        </article>
+      ))}
+    </main>
+  );
+}
+
+export async function getStaticProps() {
+  const stories = (await getAllStories()) || [];
+  return {
+    props: { stories },
+  };
+}
+
+```
+
+```
+  const stories = context.blocks;
+  
+   {stories.map((ctx, i) => (
+        <article key={i}>
+          {ctx.subtitle !== null ? <h4>{ctx.subtitle}</h4> : ''}
+          <h2>{ctx.title}</h2>
+          {ctx.bodytext01.text !== '' ? <p>{ctx.bodytext01.text}</p> : ''}
+          {ctx.bodytext02.text !== '' ? <p>{ctx.bodytext02.text}</p> : ''}
+          {ctx.images.map((image) => {
+            return (
+              <div key={image.id} className='article-img'>
+                <Image
+                  src={image.url}
+                  alt='foto'
+                  layout='responsive'
+                  width='100%'
+                  height='100%'
+                  objectFit='contain'
+                />
+              </div>
+            );
+          })}
+        </article>
+      ))}
+      
+```
+Dit is het enige wat anders is dan de index.js. Hier pakken we de prop "stories" die op dit moment alle data meeneemt en gaan we wat dieper op de code in. Voor deze pagina pakken we content.blocks. Blocks is een object die in onze query staat. Binenn in blocks staat alle data die nodig is om onze verhalen te tonen.
+
+Het is even wat werk en was ook aardig zoeken naar de juiste opzet. Toch als je eenmaal begrijpt is het wel duidelijk. Met hooks kun je ook veel kanten op en ze bieden je veel meer opties. Dat is wel één van de dingen met React, je moet vaak alles omzetten en omdenken naar de logica van Hooks.
+
 
 ## Volgende stappen
 -- (het hele verhaal op eigen pagina) (responsive) (3d model in de footer geanimeerd) 
