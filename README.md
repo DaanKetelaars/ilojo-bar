@@ -73,8 +73,8 @@ Omdat wij Next gebruiken werken wij server-side. Het ophalen van onze data vanui
 
 Ik zal even laten zien hoe wij nu data ophalen.
 
-```
-../lib/api.js
+```jsx
+//../lib/api.js
 
 import {
   GraphQLClient,
@@ -160,8 +160,8 @@ Omdat wij gebruik maken van GraphCMS, wat gemaakt is door GraphQL, kunnen wij ge
 
 Hierna maak je een context bestand aan, op google komen er verschillende versies voorbij. De één heel ingewikkeld en de ander heel simpel. Uiteindelijk hebben wij vrij weinig code nodig gehad om tot het gewenste resultaat te komen.
 
-```
-../context/state.js
+```jsx
+//../context/state.js
 
 import { createContext } from "react";
 export const Context = createContext();
@@ -171,7 +171,7 @@ export const Context = createContext();
 De volgende stap is de variabel "Context" toevoegen aan je index.js. Doe je dit niet wordt het vrij lastig om je data door te sturen.
 Dit ziet er als volgt uit.
 
-```
+```jsx
 import Main from '../components/main/Main';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
@@ -216,7 +216,7 @@ export async function getStaticProps() {
 De belangrijkste stukjes hierin voor het versturen van de data zijn deze.
 
 
-```
+```jsx
 import { Context } from '../context/state';
 import React, { useState } from 'react';
 import { getAllStories } from '../lib/api';
@@ -224,7 +224,7 @@ import { getAllStories } from '../lib/api';
 ```
 Hier importeren wij ons api.js en de functie. In de functie getAllStories zit onze data vanuit het CMS. Ook importeren wij de context provider. En als laatst de useState. Met useState gaan wij onze context provider koppelen aan ons index.js bestand.
 
-```
+```jsx
 export default function Home({ stories }) {
   const [context, setContext] = useState(stories);
   
@@ -232,14 +232,14 @@ export default function Home({ stories }) {
 Aan Home voegen wij een prop toe. Deze prop komt weer vanuit de getAllStories en getStaticProps, die onderin staat.
 Daaronder staat de useState. useState is een Hook waarmee je state variables in functional components kunt hebben. Daar voegen wij nogmaals de prop stories toe.
 
-```
+```jsx
 <Context.Provider value={[context, setContext]}></Context.Provider>
 
 ```
 
 In de context provider die om alle andere code staat in ons index.js wordt er een value meegegeven. Dit is dan weer de useState. Zoals je ziet geef je stap voor stap de data door. Het is even zoeken, maar als je het doorhebt is het wel te doen. 
 
-```
+```jsx
 export async function getStaticProps() {
   const stories = (await getAllStories()) || [];
 
@@ -253,7 +253,7 @@ Als laatst voegen wij een getStaticProps functie toe. Dit is een functie vanuit 
 
 Dan hebben we nog de allerlaatste stap. Het gebruiken van je data. Ik pak even onze main waar wij ons story component maken. Hier zitten weer wat functies en code die hierboven ook al gebruikt is. Het enige verschil is dat je nu eindelijk kan filteren binnen in de data.
 
-```
+```jsx
 // Styles
 import styles from '../../styles/main/Main.module.scss';
 import Image from 'next/image';
@@ -301,7 +301,7 @@ export async function getStaticProps() {
 
 ```
 
-```
+```jsx
   const stories = context.blocks;
   
    {stories.map((ctx, i) => (
