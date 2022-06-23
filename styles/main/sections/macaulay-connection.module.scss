@@ -20,6 +20,8 @@
         }
         &:nth-of-type(2) {
           order: 6;
+          position: relative;
+          z-index: 1;
           margin-top: 50px;
         }
       }

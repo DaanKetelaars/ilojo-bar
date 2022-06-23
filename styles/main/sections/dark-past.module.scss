@@ -65,6 +65,22 @@
         order: 4;
         margin-top: 10%;
         width: 80%;
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          background-image: url(../../../public/images/paper-effects/burnt-spot.png);
+          background-position: center;
+          background-size: contain;
+          background-repeat: no-repeat;
+          top: 60%;
+          left: -55%;
+          z-index: -1;
+          width: 100%;
+          opacity: 0.85;
+          transform: rotate(-5deg);
+          height: 100%;
+        }
       }
       div:last-of-type {
         order: 5;
@@ -76,6 +92,21 @@
         order: 6;
         margin-top: 5%;
         margin-bottom: 20%;
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          background-image: url(../../../public/images/paper-effects/burnt-spot.png);
+          background-position: center;
+          background-size: contain;
+          background-repeat: no-repeat;
+          bottom: -50%;
+          right: -58%;
+          z-index: -1;
+          width: 100%;
+          opacity: 0.85;
+          height: 125%;
+        }
       }
     }
   }
