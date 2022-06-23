@@ -80,7 +80,9 @@ Next heeft een aantal fijne optimalisatie's:
 6. Pre-rendering pages (met getStaticProps()).
 
 Deze optimalisatie's zijn voor ons de reden geweest om Next.js te gebruiken. De apparaten en verbindingen in Nigeria zijn minder krachtig en stabiel als hier. En dus wilde wij er zeker van zijn dat het met de performance van onze website goed zit. 
-<img src="https://github.com/DaanKetelaars/ilojo-bar/blob/main/assets/data-model.png" alt="data model" width="350px" /> 
+<img src="https://github.com/DaanKetelaars/ilojo-bar/blob/main/assets/performance.png" alt="data model" width="550px" /> 
+
+
 
 ### Data model
 <img src="https://github.com/DaanKetelaars/ilojo-bar/blob/main/assets/data-model.png" alt="data model" width="350px" /> 
